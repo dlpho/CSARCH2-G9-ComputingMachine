@@ -5,6 +5,8 @@ Group 9
 
 import streamlit as st
 import conversion_helpers as conv
+import arithmetic_helpers as ar
+import rounding_helpers as rnd
 
 # SCENARIO 1: DECIMAL TO DECIMAL-BASED DOUBLE-PRECISION REPRESENTATION
 def decimal_to_dp_tab():
