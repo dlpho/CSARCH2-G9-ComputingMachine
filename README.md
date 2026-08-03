@@ -7,7 +7,7 @@ This is a web-based IEEE-754 decimal double-precision application that (1) conve
 - Website link: https://csarch2-g9-computingmachine.streamlit.app/
 - Video walkthrough: [TODO]
 
-## How to Run
+## How to Run Locally
 
 Please make sure you are using a compatible version (Python 3.14).
 
