@@ -107,7 +107,7 @@ All normal-value cases matched the expected binary and hexadecimal representatio
 Edge cases involving extreme exponent ranges are handled during the final result packing phase. For positive or negative overflow (`TC7`), when the resulting biased exponent meets or exceeds **2047**, the module flags an overflow and outputs Infinity with the appropriate sign bit. For underflow (`TC8`), when the exponent drops below **1**, the module denormalizes the fraction by shifting it right based on the exponent deficit, representing the result as a subnormal float rather than truncating immediately to zero.
 
 <p align="center">
-  <img src="output/TC7_Overflow.png" alt="conversion: overflow output" width="45%">
+  <img src="output/TC7_Overflow 1.png" alt="conversion: overflow output" width="45%">
   <img src="output/TC7_Overflow 2.png" alt="conversion: overflow steps" width="45%">
 </p>
 <p align="center">
