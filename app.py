@@ -173,11 +173,178 @@ def decimal_to_dp_tab():
                 language="text"
             )
 
+# ================================
 # SCENARIO 2: ROUNDING METHODS
+# ! Ming section
+# Handles UI for:
+# - Decimal or binary input
+# - Target digit input
+# - Displaying all four rounding results
+# ================================
 def rounding_tab():
     """Render rounding methods tab."""
 
     st.header("Rounding Methods")
+
+    st.markdown(
+        """
+        Demonstrate four rounding methods using **significant digits**:
+        chopping, round up, round down, and round-to-nearest ties-to-even.
+        """
+    )
+
+    with st.expander("More insights"):
+        st.markdown(
+            """
+                        #### Rounding in Floating-Point Machines
+
+                        Floating-point machines work with limited precision. When a number has more
+                        meaningful digits than the target precision allows, the extra digits must be
+                        removed or used to decide whether the stored value should change.
+
+                        In this module, Target Number of `Significant Digits` means the number of
+                        meaningful digits to keep, not the number of digits after the decimal point.
+
+                        Example:
+                        ```
+                        Number: 1299
+                        Target significant digits: 3
+                        Kept digits: 129
+                        Discarded tail: 9
+                        ```
+
+                        The discarded tail is important because some rounding methods ignore it,
+                        while others use it to decide whether the final digit should be incremented.
+
+                        #### Supported Input Formats
+
+                        This module accepts:
+
+                        - **Decimal input**, such as `1299`, `12.3456`, `-8.765`, or `1.234e5`
+                        - **Binary input**, such as `101.1011`, `1101.01`, or `-10.011`
+
+                        The selected input format determines the base used during rounding:
+
+                        - Decimal input uses base 10.
+                        - Binary input uses base 2.
+
+                        #### Shared Rounding Process
+
+                        All four methods follow the same starting process:
+
+                        1. Read the input number and input format.
+                        2. Identify the sign, whole part, and fractional part.
+                        3. Count significant digits from the first non-zero digit.
+                        4. Keep only the target number of significant digits.
+                        5. Separate the remaining digits as the **discarded tail**.
+                        6. Apply the selected rounding rule.
+                        7. Rebuild the rounded value.
+
+                        #### Method Differences
+
+                        ##### 1) Chopping / Truncation
+
+                        Chopping keeps the target significant digits and simply drops everything
+                        after them. It does not increment the last kept digit.
+
+                        Example:
+                        ```
+                        1299 with 3 significant digits -> 1290
+                        ```
+
+                        In the output, this usually appears as `Not Incremented`. The value may
+                        still be marked as `Changed` if digits were removed or replaced by zeroes.
+
+                        ##### 2) Round Up
+
+                        Round up moves the result toward positive infinity when a non-zero
+                        discarded tail exists.
+
+                        Example:
+                        ```
+                        1299 with 3 significant digits -> 1300
+                        ```
+
+                        For positive values, round up usually increases the retained value when
+                        discarded digits are present. For negative values, it may behave differently
+                        because the direction is toward positive infinity.
+
+                        ##### 3) Round Down
+
+                        Round down moves the result toward negative infinity when a non-zero
+                        discarded tail exists.
+
+                        Example:
+                        ```
+                        1299 with 3 significant digits -> 1290
+                        ```
+
+                        For positive values, round down often matches chopping. For negative values,
+                        it can increase the magnitude because the direction is toward negative
+                        infinity.
+
+                        ##### 4) Round to Nearest, Ties to Even
+
+                        Round to nearest chooses the closest representable value. If the discarded
+                        part is exactly halfway between two possible values, the method chooses the
+                        result whose last kept digit is even.
+
+                        Example:
+                        ```
+                        1299 with 3 significant digits -> 1300
+                        ```
+
+                        This method helps reduce rounding bias because halfway cases are not always
+                        rounded upward.
+
+                        #### Output Guide
+
+                        Each method output shows:
+
+                        - `Rounded Value` - the final value after applying the method.
+                        - `Discarded Tail` - the digits removed after the target precision.
+                        - `Incremented` / `Not Incremented` - whether the last kept digit was adjusted.
+                        - `Changed` / `Unchanged` - whether the final rounded value differs from the normalized input.
+
+                        Example output interpretation:
+                        ```
+                        Input: 1299
+                        Target significant digits: 3
+                        Discarded Tail: 9
+
+                        Chopping -> 1290
+                        Round Up -> 1300
+                        Round Down -> 1290
+                        Round to Nearest -> 1300
+                        ```
+
+                        #### Special and Edge Cases
+
+                        This rounding module handles:
+
+                        - zero values
+                        - negative numbers
+                        - numbers with fewer digits than the target precision
+                        - discarded tails made only of zeroes
+                        - halfway / tie cases
+                        - invalid decimal inputs
+                        - invalid binary inputs
+                        - binary inputs with one radix point
+
+                        `NaN` and `Infinity` are not rounded in this module because they are special
+                        floating-point values, not ordinary finite digit sequences.
+
+                        #### Why This Matters
+
+                        Rounding affects the final value stored by a floating-point machine. Two
+                        machines may start with the same input, but different rounding rules can
+                        produce different stored results.
+
+                        This is important for `decimal64` and `IEEE-754-style` operations because
+                        arithmetic can produce more digits than the machine can keep. Rounding
+                        determines the final representable value after precision is limited.
+            """
+        )
 
     with st.form(key="rounding"):
 
@@ -192,18 +359,114 @@ def rounding_tab():
             placeholder="Enter a number"
         )
 
+        st.caption("Digits are counted as significant digits, not decimal places.")
+
         digits = st.number_input(
-            "Target Number of Digits",
-            min_value=1,
+            "Target Number of Significant Digits",
+            min_value=0,
             step=1
         )
 
         submit = st.form_submit_button("Round")
 
     if submit:
-        # TODO: implement
-        pass
+        if not number.strip():
+            st.error("Please enter a number.")
+            return
 
+        results = rnd.round_all_methods(number, int(digits), input_format)
+
+        if results.get("error"):
+            st.error(results["error"])
+            return
+
+        st.subheader("Output")
+
+        with st.container(border=True):
+            st.markdown(
+                """
+                <style>
+                div[data-testid="stMetric"] {
+                    gap: 0.15rem;
+                }
+                div[data-testid="stMetricLabel"] {
+                    margin-bottom: 0.05rem;
+                }
+                div[data-testid="stMetricValue"] > div {
+                    font-size: 1.25rem;
+                    font-weight: 700;
+                    line-height: 1.05;
+                }
+                </style>
+                """,
+                unsafe_allow_html=True,
+            )
+            st.write("**Input Summary**")
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Input Format", results["input_format"])
+            with col2:
+                st.metric("Target Significant Digits", str(results["digits"]))
+            with col3:
+                st.metric("Normalized Input", results["normalized_input"])
+
+        st.write("**Method Outputs**")
+
+        method_notes = {
+            "Chopping": "↳ Discard tail; keep target digits",
+            "Round Up": "↳ If tail exists, round toward +infinity",
+            "Round Down": "↳ If tail exists, round toward -infinity",
+            "Round to Nearest (Ties to Even)": "↳ Choose nearest value; ties keep even digit",
+        }
+
+        for index, (method_name, method_result) in enumerate(results["results"].items(), start=1):
+            with st.container(border=True):
+                discarded = method_result.get("discarded", "")
+                discarded_text = discarded if discarded else "None"
+
+                changed_label = "Changed" if method_result["changed"] else "Unchanged"
+                changed_bg = "#11261c" if method_result["changed"] else "#1f2124"
+                changed_fg = "#7dffbf" if method_result["changed"] else "#c9ccd1"
+                changed_border = changed_bg
+
+                incremented_label = (
+                    "Incremented" if method_result["incremented"] else "Not Incremented"
+                )
+                incremented_bg = "#11261c" if method_result["incremented"] else "#1f2124"
+                incremented_fg = "#7dffbf" if method_result["incremented"] else "#c9ccd1"
+                incremented_border = incremented_bg
+
+                discarded_bg = "#211433"
+                discarded_fg = "#d9a8ff"
+                discarded_border = discarded_bg
+
+                header_col, state_col = st.columns([5, 2])
+                with header_col:
+                    st.write(f"**{index}. {method_name}**")
+                    st.markdown(
+                        f"""
+                        <p style="margin:0.05rem 0 0.90rem 0; color:#9aa0a6; font-size:0.84rem; line-height:1.15; white-space:nowrap;">
+                            {method_notes.get(method_name, "")}
+                        </p>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                with state_col:
+                    st.markdown(
+                        f"""
+                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:0.35rem;">
+                            <div style="display:flex; flex-direction:row; justify-content:flex-end; gap:0.35rem;">
+                                <span style="background:{incremented_bg}; color:{incremented_fg}; border:1px solid {incremented_border}; padding:0.12rem 0.45rem; border-radius:0.25rem; font-size:0.80rem; line-height:1.2; white-space:nowrap;">{incremented_label}</span>
+                                <span style="background:{changed_bg}; color:{changed_fg}; border:1px solid {changed_border}; padding:0.12rem 0.45rem; border-radius:0.25rem; font-size:0.80rem; line-height:1.2; white-space:nowrap;">{changed_label}</span>
+                            </div>
+                            <span style="background:{discarded_bg}; color:{discarded_fg}; border:1px solid {discarded_border}; padding:0.12rem 0.45rem; border-radius:0.25rem; font-size:0.80rem; line-height:1.2; white-space:nowrap;">Discarded Tail: {discarded_text}</span>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+                st.write("Rounded Value")
+                st.code(method_result["value"], language="text")
 
 # SCENARIO 3: ARITHMETIC OPERATIONS
 def arithmetic_tab():
