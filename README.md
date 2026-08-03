@@ -47,8 +47,8 @@ detailed analysis of the test cases covered, comparison if operations done, and 
 
 
 ## Group 09 - S03
-Chong, Kimberly
-Hereula, Adolfo Jr.
-Ho, Denise Liana
-Miranda, Isaiah
+Chong, Kimberly;
+Hereula, Adolfo Jr.;
+Ho, Denise Liana;
+Miranda, Isaiah;
 Sarroza, Mikael
