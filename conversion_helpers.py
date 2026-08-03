@@ -5,7 +5,7 @@ import struct
 import sys
 
 SMALLEST_MAG = sys.float_info.min # 1.0x2^-1022 = 2.23x10^-308
-LARGEST_MAG = sys.float_info.max # 1.1...1x2^1023 = 1.18x10^
+LARGEST_MAG = sys.float_info.max # 1.1...1x2^1023 = 1.8x10^
 MAX_FRAC_BITS = 1200 # how many frac bits to generate 
 
 def format_bin(binary: str, sign_extend: bool = False, pad: bool = True):
@@ -459,13 +459,13 @@ def test_case_dp(fail_only: bool = False):
         "0.3",
         "2.23e-308",
         "-2.23e-308",
-        "1.18e+308",
-        "-1.18e+308",
+        "1.8e+308",
+        "-1.8e+308",
         "0.02e-310",
         "-4.23e-319",
         "6.23e+310",
-        "-2.34e+999",
-        "DASDADASD",
+        "-1.28e+310",
+        "abcdefg",
         "0x123caf",
         ""
     ]
