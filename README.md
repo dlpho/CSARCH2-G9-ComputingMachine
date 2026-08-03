@@ -1,6 +1,15 @@
-# How to Run
+# Simulation Project: Computing Machine (Machine 5)
+This is a web-based IEEE 754 decimal double-precision app that (1) converts decimal inputs to decimal-based double-precision format, (2) demonstrate rounding methods, and (3) perform subtraction and division using the GRS method.
 
-Please make sure you are using a compatible version (Python 3.14, specifically 3.14.6).
+## Project / Website Overview
+
+- Tech Stack: Python 3.14 & Streamlit
+- Website link: https://csarch2-g9-computingmachine.streamlit.app/
+- Video walkthrough: [TODO]
+
+## How to Run
+
+Please make sure you are using a compatible version (Python 3.14).
 
 1. Create a virtual environment.  
 
@@ -20,7 +29,33 @@ Please make sure you are using a compatible version (Python 3.14, specifically 3
     .venv\Scripts\Activate.ps1
     pip install -r requirements.txt
     ```
-3. Start the Streamlit app
+3. Start the Streamlit app.
     ```pwsh
     streamlit run app.py
     ```
+
+## Deployment Link
+
+Include the live website deployment link in the repository's About / Website section and here in the README.
+
+- Live site: [TODO]
+
+
+## Analysis Write-up
+detailed analysis of the test cases covered, comparison if operations done, and add specifications and parameters of operations.
+
+### Decimal to Decimal-based Double Precision Conversion
+[TODO]
+
+### Rounding Methods
+[TODO]
+### Arithmetic Operations (Subtraction and Division)
+[TODO]
+
+
+## Group 09 - S03
+Chong, Kimberly
+Hereula, Adolfo Jr.
+Ho, Denise Liana
+Miranda, Isaiah
+Sarroza, Mikael
