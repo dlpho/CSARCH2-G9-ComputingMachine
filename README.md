@@ -44,33 +44,33 @@ This part of the machine simulation converts decimal inputs into an IEEE-754 dou
 This implementation covers normal values and special cases such as signed zeroes, denormalized values, infinity, and invalid inputs or NaN, specifically quiet NaN (qNaN). The normal-value cases include integers, fractional values, scientific notation, positive and negative values, and values requiring fractional rounding.
 
 <p align="center">
-  <img src="output/conversion-test1.png" alt="conversion: normal case (input 0.3)" width="400">
+  <img src="output/conversion/conversion-test1.png" alt="conversion: normal case (input 0.3)" width="400">
 </p>
 
 As an exemplary normal case, an input of `0.3` demonstrates the conversion of a decimal fraction that cannot be represented exactly in binary and therefore requires the implemented 52-bit fraction rounding. All normal-value cases matched the expected binary and hexadecimal representations.
 
 <p align="center">
-  <img src="output/conversion-test2.png" alt="conversion: special case (positive zero)" width="45%">
-  <img src="output/conversion-test3.png" alt="conversion: special case (negative zero)" width="45%">
+  <img src="output/conversion/conversion-test2.png" alt="conversion: special case (positive zero)" width="45%">
+  <img src="output/conversion/conversion-test3.png" alt="conversion: special case (negative zero)" width="45%">
 </p>
 
 Special-value testing covers both signed zeroes, denormalization, positive and negative infinity, and qNaN. For signed zeroes, an input of `0` or `+0` produces a positive sign bit while `-0` correctly produces a negative sign bit, with the exponent and fraction fields remaining zero.
 
 <p align="center">
-  <img src="output/conversion-test4.png" alt="conversion: special case (denormalization)" width="400">
+  <img src="output/conversion/conversion-test4.png" alt="conversion: special case (denormalization)" width="400">
 </p>
 
 For the denormalization or underflow case, `0.02e-310` is below the smallest normal magnitude of **~2.23 × 10^-308** and is therefore handled by setting the exponent field to zero, or pegging the exponent to `-1022`, while retaining the significant bits in the fraction field. This allows values below the normal range to remain representable as subnormal values rather than immediately becoming zero.
 
 <p align="center">
-  <img src="output/conversion-test5.png" alt="conversion: special case (positive infinity)" width="45%">
-  <img src="output/conversion-test6.png" alt="conversion: special case (negative infinity)" width="45%">
+  <img src="output/conversion/conversion-test5.png" alt="conversion: special case (positive infinity)" width="45%">
+  <img src="output/conversion/conversion-test6.png" alt="conversion: special case (negative infinity)" width="45%">
 </p>
 
 For positive overflow or infinity, `6.23e+310` exceeds the largest representable magnitude of **~1.8 × 10^308** and is represented as positive infinity with an all-one exponent and zero fraction. The same process applies to negative overflow, such as `-2.34e+999`, except that the sign bit is negative.
 
 <p align="center">
-  <img src="output/conversion-test7.png" alt="conversion: special case (NaN)" width="400">
+  <img src="output/conversion/conversion-test7.png" alt="conversion: special case (NaN)" width="400">
 </p>
 
 For invalid inputs such as `abcdefg`, the implementation uses a fixed qNaN representation, `7FFFFFFFFFFFFFFF`. This case covers strings that cannot be parsed as decimal values. A fixed qNaN was used because a decimal input cannot directly express the different NaN results that could arise from floating-point operations, such as invalid arithmetic operations. This also provides a consistent representation comparable to [similar IEEE-754 converters online](https://www.binaryconvert.com/convert_double.html?decimal=048046051).
