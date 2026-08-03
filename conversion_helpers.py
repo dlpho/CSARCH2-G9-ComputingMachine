@@ -464,8 +464,8 @@ def test_case_dp(fail_only: bool = False):
         "0.02e-310",
         "-4.23e-319",
         "6.23e+310",
-        "-2.34e+999",
-        "DASDADASD",
+        "-1.28e+310",
+        "abcdefg",
         "0x123caf",
         ""
     ]
