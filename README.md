@@ -80,7 +80,42 @@ For validation, every test case compared the manually implemented conversion aga
 ### Rounding Methods
 [TODO]
 ### Arithmetic Operations (Subtraction and Division)
-[TODO]
+#### Division (GRS Method)
+This part of the machine simulation performs IEEE-754 double-precision division on two 64-bit operands (accepted in either Decimal or IEEE Hexadecimal format) using the **Guard, Round, and Sticky (GRS) bits** hardware algorithm. The implementation systematically parses the operands into their sign, 11-bit exponent, and 52-bit fraction components. The division process computes the tentative exponent by subtracting the unbiased exponents of the operands. To process the significands, the dividend's fraction (with its implicit bit) is shifted left by 54 bits prior to integer division. This ensures the generation of exactly enough bits to fill the 52-bit fraction, along with the Guard (G) and Round (R) bits. The remainder of this integer division determines the Sticky (S) bit. The resulting quotient is then normalized (shifting left and decrementing the exponent if the most significant bit is 0) and rounded using the **round-to-nearest, ties-to-even** method based on the extracted G, R, and S bits.
+
+This implementation covers normal decimal division, alternative IEEE Hexadecimal input formats, special cases such as division by zero and NaN, and edge cases involving overflow and underflow. As an exemplary normal case, dividing standard floating-point values (`TC1`) demonstrates the step-by-step extraction of the GRS bits and the ties-to-even rounding logic. Furthermore, the machine supports direct IEEE Hexadecimal inputs (`TC9`), parsing 16-character hex strings into binary before routing them through the exact same GRS division pipeline.
+
+<p align="center">
+  <img src="output/TC1_Normal_Division 1.png" alt="conversion: normal division output" width="45%">
+  <img src="output/TC1_Normal_Division 2.png" alt="conversion: normal division steps part 1" width="45%">
+</p>
+<p align="center">
+  <img src="output/TC1_Normal_Division 3.png" alt="conversion: normal division steps part 2" width="60%">
+</p>
+<p align="center">
+  <img src="output/TC9_Hex_Input 1.png" alt="conversion: hex input output" width="45%">
+  <img src="output/TC9_Hex_Input 2.png" alt="conversion: hex input steps" width="45%">
+</p>
+
+All normal-value cases matched the expected binary and hexadecimal representations. For special-value handling, the implementation strictly adheres to IEEE-754 rules via early detection to prevent unnecessary computation. For example, dividing a non-zero number by zero (`TC4`) triggers a special case warning badge and returns signed Infinity, while dividing zero by zero or processing invalid inputs correctly returns quiet NaN (qNaN).
+
+<p align="center">
+  <img src="output/TC4_Divide_By_Zero 1.png" alt="conversion: special case (divide by zero output)" width="45%">
+  <img src="output/TC4_Divide_By_Zero 2.png" alt="conversion: special case (divide by zero steps)" width="45%">
+</p>
+
+Edge cases involving extreme exponent ranges are handled during the final result packing phase. For positive or negative overflow (`TC7`), when the resulting biased exponent meets or exceeds **2047**, the module flags an overflow and outputs Infinity with the appropriate sign bit. For underflow (`TC8`), when the exponent drops below **1**, the module denormalizes the fraction by shifting it right based on the exponent deficit, representing the result as a subnormal float rather than truncating immediately to zero.
+
+<p align="center">
+  <img src="output/TC7_Overflow 1.png" alt="conversion: overflow output" width="45%">
+  <img src="output/TC7_Overflow 2.png" alt="conversion: overflow steps" width="45%">
+</p>
+<p align="center">
+  <img src="output/TC8_Underflow 1.png" alt="conversion: underflow output" width="45%">
+  <img src="output/TC8_Underflow 2.png" alt="conversion: underflow steps" width="45%">
+</p>
+
+For validation, the manually implemented step-by-step GRS division was tested against Python's native hardware division using `float` operations packed and unpacked via the `struct` module (`struct.pack("!d", ...)` and `struct.unpack("!Q", ...)`). This allowed full verification of the 64-bit binary representation, hexadecimal output, and special-case classification. **All division test cases created for this scenario of the machine passed.**
 
 
 ## Group 09 - S03
