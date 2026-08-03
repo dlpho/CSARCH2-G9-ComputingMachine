@@ -1,5 +1,5 @@
 # Simulation Project: Computing Machine (Machine 5)
-This is a web-based IEEE 754 decimal double-precision app that (1) converts decimal inputs to decimal-based double-precision format, (2) demonstrate rounding methods, and (3) perform subtraction and division using the GRS method.
+This is a web-based IEEE-754 decimal double-precision application that (1) converts decimal inputs to decimal-based double-precision format, (2) demonstrate rounding methods, and (3) perform subtraction and division using the GRS method.
 
 ## Project / Website Overview
 
@@ -33,13 +33,6 @@ Please make sure you are using a compatible version (Python 3.14).
     ```pwsh
     streamlit run app.py
     ```
-
-## Deployment Link
-
-Include the live website deployment link in the repository's About / Website section and here in the README.
-
-- Live site: [TODO]
-
 
 ## Analysis Write-up
 detailed analysis of the test cases covered, comparison if operations done, and add specifications and parameters of operations.
