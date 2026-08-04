@@ -345,6 +345,7 @@ def rounding_tab():
                         determines the final representable value after precision is limited.
             """
         )
+    st.subheader("Input")
 
     with st.form(key="rounding"):
 
@@ -380,7 +381,7 @@ def rounding_tab():
             st.error(results["error"])
             return
 
-        st.subheader("Output")
+        st.subheader("Rounding Output")
 
         with st.container(border=True):
             st.markdown(
@@ -474,6 +475,14 @@ def arithmetic_tab():
 
     st.header("Arithmetic Operations (GRS Method)")
 
+    st.markdown(
+            """
+            Perform arithmetic operations using GRS method. The GRS method uses Guard, Round, and Sticky bits to determine the final result after precision is limited.
+            """
+        )
+    
+    st.subheader("Input")
+
     with st.form(key="arithmetics"):
 
         operand_format = st.radio(
@@ -519,7 +528,7 @@ def arithmetic_tab():
             # Call your new Division function!
             result = ar.divide_grs(operand1, operand2, is_hex)
             
-            st.subheader("Division Result")
+            st.subheader("Division Output")
             
             # Display Special Case Badge if applicable
             if result["special_case"]:
@@ -531,7 +540,7 @@ def arithmetic_tab():
                 st.code(result["final_dec"], language="text")
                 
                 st.write("**IEEE-754 Binary:**")
-                # Using Kimberly/Adolfo's formatter for proper spacing
+                # Using Kimberly formatter for proper spacing
                 st.code(conv.format_bin(result["final_bin"]), language="text")
                 st.code(conv.format_dp(result["final_bin"]), language="text")
                 
