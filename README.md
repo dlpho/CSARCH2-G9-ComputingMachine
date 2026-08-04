@@ -128,33 +128,33 @@ This part of the machine simulation performs IEEE-754 double-precision division 
 This implementation covers normal decimal division, alternative IEEE Hexadecimal input formats, special cases such as division by zero and NaN, and edge cases involving overflow and underflow. As an exemplary normal case, dividing standard floating-point values (`TC1`) demonstrates the step-by-step extraction of the GRS bits and the ties-to-even rounding logic. Furthermore, the machine supports direct IEEE Hexadecimal inputs (`TC9`), parsing 16-character hex strings into binary before routing them through the exact same GRS division pipeline.
 
 <p align="center">
-  <img src="output/TC1_Normal_Division 1.png" alt="conversion: normal division output" width="45%">
-  <img src="output/TC1_Normal_Division 2.png" alt="conversion: normal division steps part 1" width="45%">
+  <img src="output/division/TC1_Normal_Division 1.png" alt="conversion: normal division output" width="45%">
+  <img src="output/division/TC1_Normal_Division 2.png" alt="conversion: normal division steps part 1" width="45%">
 </p>
 <p align="center">
-  <img src="output/TC1_Normal_Division 3.png" alt="conversion: normal division steps part 2" width="60%">
+  <img src="output/division/TC1_Normal_Division 3.png" alt="conversion: normal division steps part 2" width="60%">
 </p>
 <p align="center">
-  <img src="output/TC9_Hex_Input 1.png" alt="conversion: hex input output" width="45%">
-  <img src="output/TC9_Hex_Input 2.png" alt="conversion: hex input steps" width="45%">
+  <img src="output/division/TC9_Hex_Input 1.png" alt="conversion: hex input output" width="45%">
+  <img src="output/division/TC9_Hex_Input 2.png" alt="conversion: hex input steps" width="45%">
 </p>
 
 All normal-value cases matched the expected binary and hexadecimal representations. For special-value handling, the implementation strictly adheres to IEEE-754 rules via early detection to prevent unnecessary computation. For example, dividing a non-zero number by zero (`TC4`) triggers a special case warning badge and returns signed Infinity, while dividing zero by zero or processing invalid inputs correctly returns quiet NaN (qNaN).
 
 <p align="center">
-  <img src="output/TC4_Divide_By_Zero 1.png" alt="conversion: special case (divide by zero output)" width="45%">
-  <img src="output/TC4_Divide_By_Zero 2.png" alt="conversion: special case (divide by zero steps)" width="45%">
+  <img src="output/division/TC4_Divide_By_Zero 1.png" alt="conversion: special case (divide by zero output)" width="45%">
+  <img src="output/division/TC4_Divide_By_Zero 2.png" alt="conversion: special case (divide by zero steps)" width="45%">
 </p>
 
 Edge cases involving extreme exponent ranges are handled during the final result packing phase. For positive or negative overflow (`TC7`), when the resulting biased exponent meets or exceeds **2047**, the module flags an overflow and outputs Infinity with the appropriate sign bit. For underflow (`TC8`), when the exponent drops below **1**, the module denormalizes the fraction by shifting it right based on the exponent deficit, representing the result as a subnormal float rather than truncating immediately to zero.
 
 <p align="center">
-  <img src="output/TC7_Overflow 1.png" alt="conversion: overflow output" width="45%">
-  <img src="output/TC7_Overflow 2.png" alt="conversion: overflow steps" width="45%">
+  <img src="output/division/TC7_Overflow 1.png" alt="conversion: overflow output" width="45%">
+  <img src="output/division/TC7_Overflow 2.png" alt="conversion: overflow steps" width="45%">
 </p>
 <p align="center">
-  <img src="output/TC8_Underflow 1.png" alt="conversion: underflow output" width="45%">
-  <img src="output/TC8_Underflow 2.png" alt="conversion: underflow steps" width="45%">
+  <img src="output/division/TC8_Underflow 1.png" alt="conversion: underflow output" width="45%">
+  <img src="output/division/TC8_Underflow 2.png" alt="conversion: underflow steps" width="45%">
 </p>
 
 For validation, the manually implemented step-by-step GRS division was tested against Python's native hardware division using `float` operations packed and unpacked via the `struct` module (`struct.pack("!d", ...)` and `struct.unpack("!Q", ...)`). This allowed full verification of the 64-bit binary representation, hexadecimal output, and special-case classification. **All division test cases created for this scenario of the machine passed.**
@@ -165,38 +165,38 @@ This part of the machine simulation performs IEEE-754 double-precision subtracti
 This implementation covers normal decimal subtraction, alternative IEEE Hexadecimal input formats, special cases such as Infinity and NaN, and edge cases involving cancellation, overflow, and underflow. As an exemplary normal case, subtracting standard floating-point values (`TC1`, `12.5 - 2.0`) demonstrates the step-by-step alignment, GRS extraction, and ties-to-even rounding logic, and a negative-result case (`TC2`, `-100.0 - 4.0`) confirms correct sign handling.
 
 <p align="center">
-  <img src="output/Normal Subtraction 1.png" alt="subtraction: normal case output" width="45%">
-  <img src="output/Normal Subtraction 2.png" alt="subtraction: normal case steps" width="45%">
+  <img src="output/subtraction/Normal Subtraction 1.png" alt="subtraction: normal case output" width="45%">
+  <img src="output/subtraction/Normal Subtraction 2.png" alt="subtraction: normal case steps" width="45%">
 </p>
 
 A repeating-fraction case (`TC3`, `0.3 - 0.1`) further shows how the GRS bits drive correct rounding when the true result cannot be represented exactly in the 52-bit fraction, producing the expected `0.19999999999999998`.
 
 <p align="center">
-  <img src="output/Rounding Check.png" alt="subtraction: rounding check (inexact fraction)" width="60%">
+  <img src="output/subtraction/Rounding Check.png" alt="subtraction: rounding check (inexact fraction)" width="60%">
 </p>
 
 All normal-value cases matched the expected binary and hexadecimal representations. The machine also supports direct IEEE Hexadecimal inputs (`TC6`, `TC7`), parsing 16-character hex strings into binary before routing them through the exact same GRS subtraction pipeline. For special-value handling, the implementation strictly adheres to IEEE-754 rules via early detection to prevent unnecessary computation. Subtracting two like-signed infinities (`TC6`, `Infinity - Infinity`) is an invalid operation and correctly returns quiet NaN (qNaN) with a special case warning badge, while subtracting a finite value from infinity (`TC7`) returns signed Infinity.
 
 <p align="center">
-  <img src="output/Infinity-Infinity.png" alt="subtraction: Infinity minus Infinity (NaN)" width="45%">
-  <img src="output/Infinity-Finite.png" alt="subtraction: Infinity minus finite (Infinity)" width="45%">
+  <img src="output/subtraction/Infinity-Infinity.png" alt="subtraction: Infinity minus Infinity (NaN)" width="45%">
+  <img src="output/subtraction/Infinity-Finite.png" alt="subtraction: Infinity minus finite (Infinity)" width="45%">
 </p>
 
 Subtracting zero from a value (`TC4`, `A - 0`) returns the value unchanged, and subtracting two equal operands (`TC5`) produces a correctly-signed zero through exact cancellation rather than a spurious nonzero result. Invalid or non-numeric inputs (`TC10`) are likewise represented as qNaN.
 
 <p align="center">
-  <img src="output/Subtract Zero.png" alt="subtraction: subtract zero (A - 0 = A)" width="45%">
-  <img src="output/Exact Cancelation.png" alt="subtraction: exact cancellation to signed zero" width="45%">
+  <img src="output/subtraction/Subtract Zero.png" alt="subtraction: subtract zero (A - 0 = A)" width="45%">
+  <img src="output/subtraction/Exact Cancelation.png" alt="subtraction: exact cancellation to signed zero" width="45%">
 </p>
 <p align="center">
-  <img src="output/Non-Numeric Input.png" alt="subtraction: non-numeric input (NaN)" width="45%">
+  <img src="output/subtraction/Non-Numeric Input.png" alt="subtraction: non-numeric input (NaN)" width="45%">
 </p>
 
 Edge cases involving extreme exponent ranges are handled during the final result packing phase. For positive or negative overflow (`TC8`), when the resulting biased exponent meets or exceeds **2047**, the module flags an overflow and outputs Infinity with the appropriate sign bit. For underflow (`TC9`), when the biased exponent drops below **1**, the module denormalizes the fraction by shifting it right based on the exponent deficit, representing the result as a subnormal float rather than truncating immediately to zero.
 
 <p align="center">
-  <img src="output/Overflow.png" alt="subtraction: overflow to Infinity" width="45%">
-  <img src="output/Underflow-to-Denormal.png" alt="subtraction: underflow to denormal" width="45%">
+  <img src="output/subtraction/Overflow.png" alt="subtraction: overflow to Infinity" width="45%">
+  <img src="output/subtraction/Underflow-to-Denormal.png" alt="subtraction: underflow to denormal" width="45%">
 </p>
 
 ## Group 09 - S03
