@@ -7,6 +7,7 @@ This is a Python-based IEEE-754 decimal double-precision web application that (1
 - Website link: https://csarch2-g9-computingmachine.streamlit.app/
 - Video walkthrough: https://youtu.be/4ox_PUrDmgE
 - Test cases sheets: https://docs.google.com/spreadsheets/d/19xCDzQA-V0uNovz8T2U6aAiGpF4vGW13U0wMaOC8z7Q/edit?usp=sharing
+- Screenshots of test cases can be found in: `output` folder
 
 ## How to Run Locally
 
