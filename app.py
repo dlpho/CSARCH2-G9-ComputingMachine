@@ -508,8 +508,43 @@ def arithmetic_tab():
         submit = st.form_submit_button("Compute")
 
     if submit:
-        # TODO: implement
-        pass
+        # Validate inputs are not empty
+        if not operand1 or not operand2:
+            st.warning("Please enter both operands.")
+            return
+
+        is_hex = (operand_format == "IEEE Hexadecimal")
+
+        if operation == "/":
+            # Call your new Division function!
+            result = ar.divide_grs(operand1, operand2, is_hex)
+            
+            st.subheader("Division Result")
+            
+            # Display Special Case Badge if applicable
+            if result["special_case"]:
+                st.warning(f"**Special Case Triggered:** {result['special_case']}")
+            
+            # Formatted Output Display
+            with st.container(border=True):
+                st.write("**Decimal Result:**")
+                st.code(result["final_dec"], language="text")
+                
+                st.write("**IEEE-754 Binary:**")
+                # Using Kimberly/Adolfo's formatter for proper spacing
+                st.code(conv.format_bin(result["final_bin"]), language="text")
+                st.code(conv.format_dp(result["final_bin"]), language="text")
+                
+                st.write("**IEEE-754 Hexadecimal:**")
+                st.code(conv.format_hex(result["final_hex"], upper=True), language="text")
+                
+            # Expandable Step-by-Step GRS Process
+            with st.expander("View Step-by-Step GRS Process", expanded=True):
+                for step in result["steps"]:
+                    st.text(step)
+                    
+        elif operation == "-":
+            st.info("Subtraction is assigned to Mikael! Waiting for his module.")
 
 
 def app():
