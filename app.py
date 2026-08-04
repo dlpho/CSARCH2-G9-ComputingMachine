@@ -553,7 +553,31 @@ def arithmetic_tab():
                     st.text(step)
                     
         elif operation == "-":
-            st.info("Subtraction is assigned to Mikael! Waiting for his module.")
+            # Call the subtraction (GRS) module
+            result = ar.subtract_grs(operand1, operand2, is_hex)
+
+            st.subheader("Subtraction Output")
+
+            # Display Special Case Badge if applicable
+            if result["special_case"]:
+                st.warning(f"**Special Case Triggered:** {result['special_case']}")
+
+            # Formatted Output Display
+            with st.container(border=True):
+                st.write("**Decimal Result:**")
+                st.code(result["final_dec"], language="text")
+
+                st.write("**IEEE-754 Binary:**")
+                st.code(conv.format_bin(result["final_bin"]), language="text")
+                st.code(conv.format_dp(result["final_bin"]), language="text")
+
+                st.write("**IEEE-754 Hexadecimal:**")
+                st.code(conv.format_hex(result["final_hex"], upper=True), language="text")
+
+            # Expandable Step-by-Step GRS Process
+            with st.expander("View Step-by-Step GRS Process", expanded=True):
+                for step in result["steps"]:
+                    st.text(step)
 
 
 def app():
